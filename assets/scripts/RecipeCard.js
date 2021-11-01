@@ -1,8 +1,9 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
     // You'll want to attach the shadow DOM here
+    this.attachShadow({mode: "open"});
   }
 
   set data(data) {
@@ -98,8 +99,88 @@ class RecipeCard extends HTMLElement {
 
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
+      this.shadowRoot.appendChild(card);
+      this.shadowRoot.appendChild(styleElem);
 
+      let img = document.createElement("img"); //just to have a place f
+      img.src = searchForKey(data, 'thumbnailUrl');
+      card.appendChild(img);
+
+      
+      let title = document.createElement('p');
+      let link = document.createElement('a');
+      link.href = getUrl(data);//todo: link not working
+      link.textContent = searchForKey(data, 'headline');
+
+      title.appendChild(link);
+      card.appendChild(title);
+      
+      let organization = document.createElement('p');
+      organization.className = 'organization';
+      organization.textContent = getOrganization(data);
+      card.appendChild(organization);
+
+      let rating = document.createElement('div');
+      rating.className = 'rating';
+
+      let averageReview = document.createElement('span');
+      averageReview.textContent = searchForKey(data, 'ratingValue');
+
+      let totalReview = document.createElement('span');
+      totalReview.textContent = '(' + searchForKey(data, 'ratingCount') + ')';
+
+      //image for rating
+      let ratingImg = document.createElement('img');
+
+      switch (Math.round(searchForKey(data, 'ratingValue'))) {
+        case 0: ratingImg.src = 'assets/images/icons/0-star.svg'
+        img.alt = '0 stars'
+
+        case 1:  ratingImg.src = 'assets/images/icons/1-star.svg';
+        img.alt="1 stars";
+
+        case 2:  ratingImg.src = 'assets/images/icons/2-star.svg';
+        img.alt="2 stars";
+
+        case 3:  ratingImg.src = 'assets/images/icons/3-star.svg';
+        img.alt="3 stars";
+
+        case 4:  ratingImg.src = 'assets/images/icons/4-star.svg';
+        img.alt="4 stars";
+
+        case 5:  ratingImg.src = 'assets/images/icons/5-star.svg';
+        img.alt="5 stars";
+      }
+
+      if(searchForKey(data, 'ratingValue') == undefined)
+      {
+        averageReview.textContent = 'No Reviews';
+      }
+
+      if(searchForKey(data, 'ratingCount') == undefined)
+      {
+        totalReview.textContent = '';
+      }
+      
+    
+      rating.appendChild(averageReview);
+      rating.appendChild(ratingImg);
+      rating.appendChild(totalReview);
+      card.appendChild(rating);
+
+      let time = document.createElement('time');
+      time.textContent = convertTime(searchForKey(data, 'totalTime'));
+      card.appendChild(time);
+
+
+      let ingredients = document.createElement('p');
+      ingredients.className = 'ingredients';
+      ingredients.textContent = createIngredientList(searchForKey(data, 'recipeIngredient'))
+      card.appendChild(ingredients);
+      
+      
     // Part 1 Expose - TODO
+
   }
 }
 
